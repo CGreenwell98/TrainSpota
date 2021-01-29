@@ -35,3 +35,25 @@ body {
 .search input:focus {
   outline: none;
 }
+
+/* //////////////////////////////////////////////////// */
+
+.side-bar {
+  height: 10rem;
+  width: 3rem;
+  border-radius: 2rem;
+  position: absolute;
+  top: 5rem;
+  left: 1rem;
+  z-index: 1;
+  background-color: #262626;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.fas:hover {
+  cursor: pointer;
+}
