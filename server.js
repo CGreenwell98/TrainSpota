@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const trainAPI = require(__dirname + "/trainAPI.js");
+require("dotenv").config();
 
 const app = express();
 
@@ -15,6 +17,10 @@ app.get("/", (req, res) => {
 
 app.get("/map", (req, res) => {
   res.render("map");
+});
+
+app.get("/map/search-station/:stationName", async (req, res) => {
+  res.json(await trainAPI.locateStation(req.params.stationName));
 });
 
 const PORT = process.env.PORT || 5000;

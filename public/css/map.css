@@ -1,5 +1,11 @@
 body {
   margin: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.9rem;
+}
+
+i {
+  font-size: 1rem;
 }
 
 #map {
@@ -10,16 +16,19 @@ body {
 .search {
   position: absolute;
   z-index: 1;
-  top: 3rem;
+  top: 5rem;
   left: 5rem;
-  width: 15rem;
-  height: 10rem;
-  border-radius: 1rem;
+  width: 18rem;
+  min-height: 9rem;
+  max-height: 32rem;
+  border-radius: 1.5rem;
   background-color: #262626;
   color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
+  flex-direction: column;
+  padding: 2rem 0;
 }
 
 .search label {
@@ -36,12 +45,30 @@ body {
   outline: none;
 }
 
+.search-results {
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+.result-box {
+  width: 12rem;
+  border-radius: 1rem;
+  padding: 0.1rem 1rem;
+  background-color: #4c4c4c;
+  color: white;
+  margin-top: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
 /* //////////////////////////////////////////////////// */
 
 .side-bar {
-  height: 10rem;
+  height: 13rem;
   width: 3rem;
-  border-radius: 2rem;
+  border-radius: 1.5rem;
   position: absolute;
   top: 5rem;
   left: 1rem;
@@ -54,6 +81,24 @@ body {
   justify-content: space-evenly;
 }
 
-.fas:hover {
+.fas:hover,
+.result-box:hover {
   cursor: pointer;
+}
+
+/* ////////////////////////////////////////////////////////////////// */
+/* Leaflet */
+
+.leaflet-popup .leaflet-popup-content-wrapper {
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+}
+
+.leaflet-popup .leaflet-popup-content {
+  font-size: 1em;
+}
+
+.leaflet-popup .leaflet-popup-tip {
+  background-color: black;
 }

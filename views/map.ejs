@@ -9,6 +9,11 @@
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
       crossorigin=""
     />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/css/map.css" />
 
     <script
@@ -21,16 +26,22 @@
   <body>
     <div class="side-bar">
       <i class="fas fa-home" data-name="home"></i>
+      <i class="fas fa-search" data-name="search"></i>
       <i class="fas fa-map-marker-alt" data-name="curLocation"></i>
       <i class="fas fa-map" data-name="mapType"></i>
       <i class="fas fa-subway" data-name="trainRoutes"></i>
     </div>
-    <!-- <div class="search">
-      <form action="#">
+    <div class="search hidden">
+      <form class="search-form" action="#">
         <label for="search">Search:</label>
-        <input name="search" type="text" />
+        <input class="search-box" name="search" type="search" />
       </form>
-    </div> -->
+      <div class="search-results">
+        <!-- <div class="result-box">
+          <p>London Euston EUS</p>
+        </div> -->
+      </div>
+    </div>
 
     <div id="map" style="height: 100vh"></div>
     <script type="module" src="/javascript/controller.js"></script>

@@ -1,7 +1,11 @@
+import MapUI from "./mapUI.js";
+
 class Map {
   #map;
   #currentLayer = "openStreetMap";
   #showTrainRoutes = true;
+  #curLocationMarker;
+  #searchedStations;
 
   #mapLayers = {
     satelitte: L.tileLayer(
@@ -30,14 +34,14 @@ class Map {
   };
 
   constructor() {
-    this._renderCurrentPosition();
+    this.renderCurrentPosition("_loadMap");
   }
 
-  _renderCurrentPosition() {
+  renderCurrentPosition(mapFunction) {
     // Geo-location:
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition(
-        this._loadMap.bind(this),
+        this[mapFunction].bind(this),
         function () {
           alert("Could not get your position");
         }
@@ -51,6 +55,7 @@ class Map {
     this.#map = L.map("map", {
       center: coords,
       zoom: 13,
+      zoomControl: false,
       layers: [this.#mapLayers.openStreetMap, this.#mapLayers.openRailwayMap],
     });
 
@@ -81,6 +86,57 @@ class Map {
     if (this.#showTrainRoutes)
       this.#map.addLayer(this.#mapLayers.openRailwayMap);
     else this.#map.removeLayer(this.#mapLayers.openRailwayMap);
+  }
+
+  panToCurrentPosition(position) {
+    if (this.#curLocationMarker) this.#curLocationMarker.remove();
+    this.#curLocationMarker = this._addMarker(
+      this._getCoords(position.coords),
+      "You Are Here"
+    );
+  }
+
+  async fetchStationData(stationName) {
+    this.#searchedStations = await fetch(
+      `/map/search-station/${stationName}`
+    ).then((res) => res.json());
+    if (this.#searchedStations.length === 1) {
+      this.panToStation(0);
+    }
+    const dataUI = this.#searchedStations.map((station) => ({
+      name: station.name,
+      code: station.station_code,
+    }));
+    MapUI.displaySearchResults(dataUI);
+  }
+
+  panToStation(index) {
+    this._addMarker(
+      this._getCoords(this.#searchedStations[index]),
+      this.#searchedStations[index].name
+    );
+  }
+
+  _addMarker(coords, popupText) {
+    L.marker(coords)
+      .addTo(this.#map)
+      .bindPopup(
+        L.popup({
+          //   maxWidth: 250,
+          //   minWidth: 100,
+
+          autoClose: false,
+          className: `popup`,
+        })
+      )
+      .setPopupContent(popupText)
+      .openPopup();
+    this.#map.flyTo(coords, 15);
+  }
+
+  _getCoords(object) {
+    const { latitude, longitude } = object;
+    return [latitude, longitude];
   }
 }
 
