@@ -24,6 +24,7 @@ class MapUI {
       Map.renderCurrentPosition("panToCurrentPosition");
     if (btnClicked === "search")
       this.#searchContainer.classList.toggle("hidden");
+    if (btnClicked !== "search") this.#searchContainer.classList.add("hidden");
   }
 
   async _stationSearch(event) {
