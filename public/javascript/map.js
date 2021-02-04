@@ -1,11 +1,9 @@
-import MapUI from "./mapUI.js";
-
 class Map {
   #map;
   #currentLayer = "openStreetMap";
   #showTrainRoutes = true;
-  #curLocationMarker;
-  #searchedStations;
+  #stationMarkers = [];
+  searchedStations;
 
   #mapLayers = {
     satelitte: L.tileLayer(
@@ -25,7 +23,6 @@ class Map {
     openRailwayMap: L.tileLayer(
       "https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
       {
-        maxZoom: 18,
         zIndex: 2,
         attribution:
           'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://www.OpenRailwayMap.org">OpenRailwayMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
@@ -55,8 +52,14 @@ class Map {
     this.#map = L.map("map", {
       center: coords,
       zoom: 13,
+      maxZoom: 18,
+      minZoom: 6,
       zoomControl: false,
       layers: [this.#mapLayers.openStreetMap, this.#mapLayers.openRailwayMap],
+      maxBounds: [
+        [59, -12],
+        [50, 3],
+      ],
     });
 
     // const baseMaps = {
@@ -89,35 +92,33 @@ class Map {
   }
 
   panToCurrentPosition(position) {
-    if (this.#curLocationMarker) this.#curLocationMarker.remove();
-    this.#curLocationMarker = this._addMarker(
-      this._getCoords(position.coords),
-      "You Are Here"
-    );
+    const coords = this._getCoords(position.coords);
+    this.#map.flyTo(coords, 15);
+    this._addMarker(coords, "You Are Here");
   }
 
   async fetchStationData(stationName) {
-    this.#searchedStations = await fetch(
+    this.searchedStations = await fetch(
       `/map/search-station/${stationName}`
     ).then((res) => res.json());
-    if (this.#searchedStations.length === 1) {
+    if (this.searchedStations.length === 1) {
       this.panToStation(0);
     }
-    const dataUI = this.#searchedStations.map((station) => ({
+    let dataUI = this.searchedStations.map((station) => ({
       name: station.name,
       code: station.station_code,
     }));
-    MapUI.displaySearchResults(dataUI);
+    return dataUI;
   }
 
   panToStation(index) {
-    this._addMarker(
-      this._getCoords(this.#searchedStations[index]),
-      this.#searchedStations[index].name
-    );
+    const coords = this._getCoords(this.searchedStations[index]);
+    this.#map.flyTo(coords, 15);
+    this._addMarker(coords, this.searchedStations[index].name);
   }
 
   _addMarker(coords, popupText) {
+    if (this.#stationMarkers.includes(popupText)) return;
     L.marker(coords)
       .addTo(this.#map)
       .bindPopup(
@@ -131,12 +132,29 @@ class Map {
       )
       .setPopupContent(popupText)
       .openPopup();
-    this.#map.flyTo(coords, 15);
+    this.#stationMarkers.push(popupText);
   }
 
   _getCoords(object) {
     const { latitude, longitude } = object;
     return [latitude, longitude];
+  }
+
+  async getTrainData(index, type) {
+    try {
+      const stationCode = this.searchedStations[index].station_code;
+      const trainData = await fetch(
+        `/map/station-trains/${stationCode}/${type}`
+      ).then((res) => res.json());
+      trainData.forEach((data) => {
+        if (type === "pass") return;
+        if (!data.arrival_time) data.arrival_time = "Starts here";
+        if (!data.departure_time) data.departure_time = "Terminates here";
+      });
+      return trainData;
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 

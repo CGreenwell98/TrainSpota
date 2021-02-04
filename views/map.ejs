@@ -25,21 +25,23 @@
   </head>
   <body>
     <div class="side-bar">
-      <i class="fas fa-home" data-name="home"></i>
-      <i class="fas fa-search" data-name="search"></i>
-      <i class="fas fa-map-marker-alt" data-name="curLocation"></i>
-      <i class="fas fa-map" data-name="mapType"></i>
-      <i class="fas fa-subway" data-name="trainRoutes"></i>
+      <i class="fas fa-home btn" data-name="home"></i>
+      <i class="fas fa-search btn" data-name="search"></i>
+      <i class="fas fa-map-marker-alt btn" data-name="curLocation"></i>
+      <i class="fas fa-map btn" data-name="mapType"></i>
+      <i class="fas fa-subway btn" data-name="trainRoutes"></i>
     </div>
     <div class="search hidden">
       <form class="search-form" action="#">
-        <label for="search">Search:</label>
         <input class="search-box" name="search" type="search" />
+        <button class="btn" for="search"><i class="fas fa-search"></i></button>
       </form>
+      <div class="train-btn-box"></div>
       <div class="search-results">
-        <div class="result-box">
-          <p>Search for any National Rail Station in the UK</p>
-        </div>
+        <p>
+          Search for any National Rail Station<br />
+          in the UK
+        </p>
       </div>
     </div>
 

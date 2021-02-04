@@ -6,14 +6,24 @@ class MapUI {
   #searchForm = document.querySelector(".search-form");
   #searchBox = document.querySelector(".search-box");
   #searchResults = document.querySelector(".search-results");
+  #trainBtnBox = document.querySelector(".train-btn-box");
+
+  #curStation;
+  #curTrainType = "stopping";
+  #clickedIndex;
 
   constructor() {
     this.#sideBar.addEventListener("click", this._buttonClick.bind(this));
     this.#searchForm.addEventListener("submit", this._stationSearch.bind(this));
+    this.#searchContainer.addEventListener(
+      "click",
+      this._searchResultClick.bind(this)
+    );
+    this.#trainBtnBox.addEventListener("click", this._trainBtnClick.bind(this));
   }
 
   _buttonClick(event) {
-    const clicked = event.target.closest(".fas");
+    const clicked = event.target.closest(".btn");
     if (!clicked) return;
 
     const btnClicked = clicked.dataset.name;
@@ -29,21 +39,23 @@ class MapUI {
 
   async _stationSearch(event) {
     event.preventDefault();
-    Map.fetchStationData(this.#searchBox.value);
+    const stationData = await Map.fetchStationData(this.#searchBox.value);
+    this._displaySearchResults(stationData);
     this.#searchBox.value = "";
   }
 
-  displaySearchResults(dataUI) {
-    this.#searchResults.innerHTML = "";
-    dataUI.forEach((data, i) =>
+  _displaySearchResults(stationData) {
+    this.#searchResults.innerHTML = this.#trainBtnBox.innerHTML = "";
+    if (stationData.length < 1)
+      return this.#searchResults.insertAdjacentHTML(
+        "beforeend",
+        `<p>No search results found</p>`
+      );
+    stationData.forEach((data, i) =>
       this.#searchResults.insertAdjacentHTML(
         "beforeend",
         this._searchResultMarkup(data, i)
       )
-    );
-    this.#searchContainer.addEventListener(
-      "click",
-      this._searchResultClick.bind(this)
     );
   }
 
@@ -55,10 +67,101 @@ class MapUI {
     `;
   }
 
-  _searchResultClick(event) {
+  async _searchResultClick(event) {
     const clicked = event.target.closest(".result-box");
     if (!clicked) return;
-    Map.panToStation(clicked.dataset.index);
+    // clear searh results + remove click:
+    this.#searchResults.innerHTML = "";
+
+    // pan camera and get station + train data:
+    this.#clickedIndex = clicked.dataset.index;
+    if (Map.searchedStations.length > 1) Map.panToStation(this.#clickedIndex);
+    const { name: stationName, station_code } = Map.searchedStations[
+      this.#clickedIndex
+    ];
+    this.#curStation = { stationName, station_code };
+    const trainData = await Map.getTrainData(this.#clickedIndex, "stopping");
+
+    // display new data:
+    this.#searchResults.insertAdjacentHTML(
+      "beforeend",
+      this._displayTrainData(trainData, this.#curStation)
+    );
+
+    // Display buttons:
+    this.#trainBtnBox.insertAdjacentHTML(
+      "beforeend",
+      `
+      <button class="train-type-btn btn" data-traintype="stopping">Stopping</button>
+      <button class="train-type-btn btn" data-traintype="pass">Passing</button>
+     `
+    );
+  }
+
+  _displayTrainData(trainData, { stationName, station_code }, trainType) {
+    if (trainData.length < 1) return `<p>No train data found</p>`;
+    return `
+        <div class="train-data-box">
+              <h5>${stationName} (${station_code})</h5>
+              <b>Trains ${trainType === "pass" ? "passing" : "stopping"}:</b>
+              ${
+                trainType === "pass"
+                  ? this._trainPassingDataMarkup(trainData)
+                  : this._trainStoppingDataMarkup(trainData)
+              }
+              
+            </div>
+      `;
+  }
+
+  _trainStoppingDataMarkup(trainData) {
+    let markup = "";
+    trainData.forEach((data) => {
+      markup += ` <hr />
+          <p>
+            ${data.operator_name} (${data.train_uid}) <br />
+            ${data.origin_name} to ${data.destination_name}
+          </p>
+          <ul>
+            <li>Platform ${data.platform ? data.platform : "1"}</li>
+            <li>ETA/ETD: ${data.arrival_time} - ${data.departure_time}</li>
+            </ul>`;
+    });
+    return markup;
+  }
+
+  _trainPassingDataMarkup(trainData) {
+    let markup = "";
+    trainData.forEach((data) => {
+      markup += ` <hr />
+          <p>
+            ${data.operator_name} (${data.train_uid}) <br />
+            ${data.origin_name} to ${data.destination_name}
+          </p>
+          <ul>
+            <li>Platform ${data.platform ? data.platform : "1"}</li>
+            <li>Pass time: ${data.pass_time}</li>
+            </ul>`;
+    });
+    return markup;
+  }
+
+  async _trainBtnClick(event) {
+    const clicked = event.target.closest(".train-type-btn");
+    if (!clicked) return;
+
+    // prevent reload on same button press:
+    const trainType = clicked.dataset.traintype;
+    if (trainType === this.#curTrainType) return;
+    this.#curTrainType = trainType;
+
+    // update data:
+    this.#searchResults.innerHTML = "";
+    const trainData = await Map.getTrainData(this.#clickedIndex, trainType);
+    this.#searchResults.insertAdjacentHTML(
+      "beforeend",
+      this._displayTrainData(trainData, this.#curStation, trainType)
+    );
   }
 }
 

@@ -1,12 +1,35 @@
 body {
   margin: 0;
   font-family: "Roboto", sans-serif;
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 i {
   font-size: 1rem;
+  color: white;
 }
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+  width: 1rem;
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 1rem;
+  border: solid 0.35rem #262626;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4c4c4c;
+}
+
+/* Map */
 
 #map {
   position: relative;
@@ -20,7 +43,7 @@ i {
   left: 5rem;
   width: 18rem;
   min-height: 9rem;
-  max-height: 32rem;
+  max-height: 70%;
   border-radius: 1.5rem;
   background-color: #262626;
   color: white;
@@ -39,25 +62,81 @@ i {
   border-radius: 2rem;
   padding: 0 1rem;
   border: none;
+  width: 12rem;
   height: 2rem;
+  background-color: #f8f8ff;
 }
 
 .search input:focus {
   outline: none;
 }
 
-.search-results {
-  margin-top: 1rem;
-  overflow: hidden;
+.search-form button,
+.search-form button:focus {
+  background-color: #262626;
 }
 
-.result-box {
+.search-form {
+  margin-bottom: 2rem;
+}
+
+.search-results {
+  overflow: auto;
+}
+
+.result-box,
+.train-data-box {
   width: 12rem;
   border-radius: 1rem;
   padding: 0.1rem 1rem;
   background-color: #4c4c4c;
   color: white;
-  margin-top: 1rem;
+  transition: all 0.3s;
+}
+
+.result-box:not(:last-child),
+.train-data-box:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.result-box:hover {
+  background-color: #555;
+}
+
+.train-data-box h5 {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.train-data-box ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.train-data-box li:not(:last-child) {
+  margin-bottom: 0.3rem;
+}
+
+.train-data-box br {
+  margin-top: 0.2rem;
+}
+
+.train-type-btn {
+  border-radius: 1rem;
+  height: 1.6rem;
+  width: 5rem;
+  color: white;
+  background-color: #45859a;
+  margin-bottom: 1rem;
+  transition: all 0.3s;
+}
+
+.train-type-btn:hover {
+  background-color: #226074;
+}
+
+.train-btn-box {
+  width: 14rem;
 }
 
 .hidden {
@@ -82,9 +161,12 @@ i {
   justify-content: space-evenly;
 }
 
-.fas:hover,
+.btn,
+.btn:hover,
 .result-box:hover {
   cursor: pointer;
+  border: none;
+  outline: none;
 }
 
 /* ////////////////////////////////////////////////////////////////// */
