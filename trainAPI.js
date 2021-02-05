@@ -37,3 +37,15 @@ exports.stationTrainData = async function (stationCode, type) {
     console.error(err);
   }
 };
+
+exports.closestStation = async function (lat, lng) {
+  try {
+    const response = await fetch(
+      `https://transportapi.com/v3/uk/places.json?app_id=${process.env.TRANSPORT_API_ID}&app_key=${process.env.TRANSPORT_API_KEY}&lat=${lat}&lon=${lng}&type=train_station`
+    );
+    const json = await response.json();
+    return json.member[0];
+  } catch (err) {
+    console.error(err);
+  }
+};

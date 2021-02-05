@@ -76,26 +76,8 @@ class MapUI {
     // pan camera and get station + train data:
     this.#clickedIndex = clicked.dataset.index;
     if (Map.searchedStations.length > 1) Map.panToStation(this.#clickedIndex);
-    const { name: stationName, station_code } = Map.searchedStations[
-      this.#clickedIndex
-    ];
-    this.#curStation = { stationName, station_code };
-    const trainData = await Map.getTrainData(this.#clickedIndex, "stopping");
-
-    // display new data:
-    this.#searchResults.insertAdjacentHTML(
-      "beforeend",
-      this._displayTrainData(trainData, this.#curStation)
-    );
-
-    // Display buttons:
-    this.#trainBtnBox.insertAdjacentHTML(
-      "beforeend",
-      `
-      <button class="train-type-btn btn" data-traintype="stopping">Stopping</button>
-      <button class="train-type-btn btn" data-traintype="pass">Passing</button>
-     `
-    );
+    const { name, station_code } = Map.searchedStations[this.#clickedIndex];
+    this._handleTrainSearch(name, station_code);
   }
 
   _displayTrainData(trainData, { stationName, station_code }, trainType) {
@@ -157,11 +139,42 @@ class MapUI {
 
     // update data:
     this.#searchResults.innerHTML = "";
-    const trainData = await Map.getTrainData(this.#clickedIndex, trainType);
+    const trainData = await Map.getTrainData(
+      this.#curStation.stationCode,
+      trainType
+    );
     this.#searchResults.insertAdjacentHTML(
       "beforeend",
       this._displayTrainData(trainData, this.#curStation, trainType)
     );
+  }
+
+  async _handleTrainSearch(stationName, stationCode) {
+    this.#curStation = { stationName, stationCode };
+    this.#curTrainType = "stopping";
+    const trainData = await Map.getTrainData(stationCode, "stopping");
+
+    // display new data:
+    this.#searchResults.insertAdjacentHTML(
+      "beforeend",
+      this._displayTrainData(trainData, this.#curStation)
+    );
+
+    // Display buttons:
+    this.#trainBtnBox.insertAdjacentHTML(
+      "beforeend",
+      `
+      <button class="train-type-btn btn" data-traintype="stopping">Stopping</button>
+      <button class="train-type-btn btn" data-traintype="pass">Passing</button>
+     `
+    );
+  }
+
+  displayClosestStation(stationData) {
+    this.#searchContainer.classList.remove("hidden");
+    this.#searchResults.innerHTML = "";
+    const { name, station_code } = stationData;
+    this._handleTrainSearch(name, station_code);
   }
 }
 

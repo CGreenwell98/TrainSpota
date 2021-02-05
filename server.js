@@ -29,5 +29,9 @@ app.get("/map/station-trains/:stationCode/:type", async (req, res) => {
   );
 });
 
+app.get("/map/closest-station/:lat/:lng", async (req, res) => {
+  res.json(await trainAPI.closestStation(req.params.lat, req.params.lng));
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

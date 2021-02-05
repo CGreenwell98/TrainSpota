@@ -1,9 +1,12 @@
+import MapUI from "./mapUI.js";
+
 class Map {
   #map;
   #currentLayer = "openStreetMap";
   #showTrainRoutes = true;
   #stationMarkers = [];
   searchedStations;
+  #clickedMap = [];
 
   #mapLayers = {
     satelitte: L.tileLayer(
@@ -60,7 +63,7 @@ class Map {
         [59, -12],
         [50, 3],
       ],
-    });
+    }).on("click", this._mapClick.bind(this));
 
     // const baseMaps = {
     //   Default: this.#mapLayers.openStreetMap,
@@ -140,9 +143,8 @@ class Map {
     return [latitude, longitude];
   }
 
-  async getTrainData(index, type) {
+  async getTrainData(stationCode, type) {
     try {
-      const stationCode = this.searchedStations[index].station_code;
       const trainData = await fetch(
         `/map/station-trains/${stationCode}/${type}`
       ).then((res) => res.json());
@@ -155,6 +157,21 @@ class Map {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  async _mapClick(e) {
+    //   code that tackles leaflet bug that registers clicks twice:
+    this.#clickedMap.push("click");
+    if (this.#clickedMap.length > 1) return (this.#clickedMap = []);
+
+    // finding closest station to coords:
+    const { lat, lng } = e.latlng;
+    const closestStation = await fetch(
+      `/map/closest-station/${lat}/${lng}`
+    ).then((res) => res.json());
+    if (closestStation.distance > 100) return;
+    console.log(closestStation);
+    MapUI.displayClosestStation(closestStation);
   }
 }
 
