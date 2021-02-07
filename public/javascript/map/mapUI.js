@@ -80,11 +80,11 @@ class MapUI {
     this._handleTrainSearch(name, station_code);
   }
 
-  _displayTrainData(trainData, { stationName, station_code }, trainType) {
+  _displayTrainData(trainData, { stationName, stationCode }, trainType) {
     if (trainData.length < 1) return `<p>No train data found</p>`;
     return `
         <div class="train-data-box">
-              <h5>${stationName} (${station_code})</h5>
+              <h5>${stationName} (${stationCode})</h5>
               <b>Trains ${trainType === "pass" ? "passing" : "stopping"}:</b>
               ${
                 trainType === "pass"
@@ -172,7 +172,7 @@ class MapUI {
 
   displayClosestStation(stationData) {
     this.#searchContainer.classList.remove("hidden");
-    this.#searchResults.innerHTML = "";
+    this.#searchResults.innerHTML = this.#trainBtnBox.innerHTML = "";
     const { name, station_code } = stationData;
     this._handleTrainSearch(name, station_code);
   }

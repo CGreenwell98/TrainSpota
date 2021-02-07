@@ -63,7 +63,9 @@ class Map {
         [59, -12],
         [50, 3],
       ],
-    }).on("click", this._mapClick.bind(this));
+    }).on("dblclick", this._mapClick.bind(this));
+
+    this.#map.doubleClickZoom.disable();
 
     // const baseMaps = {
     //   Default: this.#mapLayers.openStreetMap,
@@ -161,16 +163,18 @@ class Map {
 
   async _mapClick(e) {
     //   code that tackles leaflet bug that registers clicks twice:
-    this.#clickedMap.push("click");
-    if (this.#clickedMap.length > 1) return (this.#clickedMap = []);
+    // this.#clickedMap.push("click");
+    // if (this.#clickedMap.length > 1) return (this.#clickedMap = []);
+    console.log("clicked");
 
     // finding closest station to coords:
     const { lat, lng } = e.latlng;
     const closestStation = await fetch(
       `/map/closest-station/${lat}/${lng}`
     ).then((res) => res.json());
-    if (closestStation.distance > 100) return;
-    console.log(closestStation);
+    if (closestStation.distance > 500) return;
+    const { latitude, longitude } = closestStation;
+    this._addMarker([latitude, longitude], closestStation.name);
     MapUI.displayClosestStation(closestStation);
   }
 }
