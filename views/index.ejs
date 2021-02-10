@@ -10,6 +10,11 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/homepage.css" />
+    <script
+      defer
+      src="https://kit.fontawesome.com/f657ccdfcc.js"
+      crossorigin="anonymous"
+    ></script>
     <script defer type="module" src="/javascript/homepage.js"></script>
     <title>TrainSpota</title>
   </head>
@@ -21,7 +26,7 @@
       <ul class="nav-links">
         <li class="nav-link">Home</li>
         <li class="nav-link"><a href="/map">Map</a></li>
-        <li class="nav-link">Features</li>
+        <li class="nav-link">Sign-in</li>
       </ul>
       <div class="burger">
         <div class="line"></div>
@@ -29,5 +34,69 @@
         <div class="line"></div>
       </div>
     </nav>
+
+    <section class="landing">
+      <div class="landing-container">
+        <div class="landing-title">
+          <div class="landing-text">
+            <h1>TrainSpota</h1>
+            <p>
+              The interactive map that makes finding stations & trains easy.
+            </p>
+            <a href="/map"><button class="btn">View Map</button></a>
+          </div>
+        </div>
+        <div class="landing-image"></div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="features-container">
+        <h2>Features</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <i class="fas fa-search"></i>
+            <p>
+              Search for any National Rail station in the entire UK or Ireland
+            </p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-map"></i>
+            <p>
+              View existing, planned and old railway routes overlayed over
+              OpenStreetMap or satelitte imagery
+            </p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-subway"></i>
+            <p>
+              Train information for stopping and passing trains through a
+              station over the next hour
+            </p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-mouse"></i>
+            <p>
+              Double-click near any station to get quick acess to train
+              information
+            </p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-table"></i>
+            <p>
+              Detailed train timetable for a given station and time period
+              (coming soon)
+            </p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-user"></i>
+            <p>
+              Log-in to save your favourite stations or a specific timetable
+              (coming soon)
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>

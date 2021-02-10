@@ -1,5 +1,6 @@
 body {
-  overflow: hidden;
+  overflow-x: hidden;
+  background: #eeeeee;
 }
 
 * {
@@ -9,17 +10,29 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+/* Navbar */
+
 nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
   background-color: #262626;
-  color: #f8f8ff;
+  color: #f3f3f3;
   min-height: 7vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 10;
 }
 
 .logo {
   font-size: 1.5rem;
+}
+
+.nav-link:hover,
+.nav-link a:hover {
+  color: #888888;
+  cursor: pointer;
 }
 
 .nav-links {
@@ -58,8 +71,9 @@ nav {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   .nav-links {
+    z-index: 5;
     position: absolute;
     right: 0px;
     height: 93vh;
@@ -92,5 +106,161 @@ nav {
   to {
     opacity: 1;
     transform: translatex(0px);
+  }
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////////////// */
+/* landing page */
+
+.landing h1 {
+  font-size: 3rem;
+  letter-spacing: 0.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.landing p {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.landing-container {
+  height: 90vh;
+}
+
+.landing-title {
+  background-color: #45859a;
+  color: #f8f8ff;
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%) skew(-10deg);
+  z-index: 2;
+  width: 40%;
+  padding: 4rem;
+  text-align: center;
+  box-shadow: 5px 7px 1px #888888;
+}
+
+.landing-image {
+  margin-top: 7vh;
+  background-image: url("/images/map-crewe.png");
+  height: 100%;
+  filter: blur(1px);
+  -webkit-filter: blur(1px);
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.landing-text {
+  transform: skew(10deg);
+}
+
+.btn:hover,
+.btn {
+  cursor: pointer;
+  outline: none;
+}
+
+.btn:hover {
+  border-color: #888888;
+}
+
+.btn {
+  border: solid 1px white;
+  border-radius: 2rem;
+  padding: 0.3em 1em;
+  color: white;
+  background-color: #45859a;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  background-color: #226074;
+}
+
+@media screen and (max-width: 1024px) {
+  .landing-title {
+    width: 60%;
+  }
+  .btn {
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .landing-title {
+    width: 96%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0;
+  }
+  .landing h1 {
+    font-size: 2.4rem;
+    letter-spacing: 0.3rem;
+  }
+  .landing-text {
+    transform: skew(0);
+  }
+}
+
+/* /////////////////////////////////////////////////////////////////////////////////////////////////////
+Features section: */
+
+.features-container {
+  width: 100%;
+  padding: 6rem 0;
+  background-color: #eeeeee;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.features-container h2 {
+  color: #45859a;
+  font-size: 2.4rem;
+  letter-spacing: 0.4rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 2rem;
+  margin-top: 1rem;
+}
+
+.feature-card {
+  width: 320px;
+  height: 200px;
+  padding: 2em;
+  background-color: #45859a;
+  color: #f8f8ff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align: center;
+}
+
+.feature-card i {
+  font-size: 2rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .features-grid {
+    grid-template-columns: 1fr;
   }
 }
