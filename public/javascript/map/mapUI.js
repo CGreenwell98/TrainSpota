@@ -32,9 +32,15 @@ class MapUI {
     if (btnClicked === "trainRoutes") Map.toggleTrainRoutes();
     if (btnClicked === "curLocation")
       Map.renderCurrentPosition("panToCurrentPosition");
-    if (btnClicked === "search")
-      this.#searchContainer.classList.toggle("hidden");
+    if (btnClicked === "search") this._searchButton();
+
     if (btnClicked !== "search") this.#searchContainer.classList.add("hidden");
+  }
+
+  _searchButton() {
+    const btn = this.#searchContainer.classList;
+    btn.toggle("hidden");
+    if (!btn.contains("hidden")) this.#searchBox.focus();
   }
 
   async _stationSearch(event) {

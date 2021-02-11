@@ -36,6 +36,8 @@ i {
   z-index: 0;
 }
 
+/* Search */
+
 .search {
   position: absolute;
   z-index: 1;
@@ -54,8 +56,11 @@ i {
   padding: 2rem 0;
 }
 
-.search label {
-  font-size: 1rem;
+@media screen and (max-width: 767px) {
+  .search {
+    left: 10%;
+    width: 80%;
+  }
 }
 
 .search input {
@@ -103,6 +108,8 @@ i {
   background-color: #555;
 }
 
+/* Train times */
+
 .train-data-box h5 {
   font-size: 1rem;
   margin-bottom: 0;
@@ -147,8 +154,7 @@ i {
 /* side-bar */
 
 .side-bar {
-  height: 13rem;
-  width: 3rem;
+  padding: 0.9rem;
   border-radius: 1.5rem;
   position: absolute;
   top: 5rem;
@@ -162,12 +168,33 @@ i {
   justify-content: space-evenly;
 }
 
+.side-bar .btn {
+  margin: 0.6rem 0;
+}
+
 .btn,
 .btn:hover,
 .result-box:hover {
   cursor: pointer;
   border: none;
   outline: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .side-bar .btn {
+    margin: 1rem 0;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .side-bar {
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    flex-direction: row;
+    padding: 0;
+  }
 }
 
 /* ////////////////////////////////////////////////////////////////// */

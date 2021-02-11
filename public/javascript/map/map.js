@@ -66,20 +66,6 @@ class Map {
     }).on("dblclick", this._mapClick.bind(this));
 
     this.#map.doubleClickZoom.disable();
-
-    // const baseMaps = {
-    //   Default: this.#mapLayers.openStreetMap,
-    //   Satelitte: this.#mapLayers.satelitte,
-    // };
-
-    // const overlayMaps = {
-    //   Railways: this.#mapLayers.openRailwayMap,
-    // };
-
-    // L.control.layers(baseMaps, overlayMaps).addTo(this.#map);
-
-    //   Handle click on map:
-    //   this.#map.on('click', this._showForm.bind(this));
   }
 
   changeMapType() {
@@ -128,9 +114,6 @@ class Map {
       .addTo(this.#map)
       .bindPopup(
         L.popup({
-          //   maxWidth: 250,
-          //   minWidth: 100,
-
           autoClose: false,
           className: `popup`,
         })
@@ -162,11 +145,6 @@ class Map {
   }
 
   async _mapClick(e) {
-    //   code that tackles leaflet bug that registers clicks twice:
-    // this.#clickedMap.push("click");
-    // if (this.#clickedMap.length > 1) return (this.#clickedMap = []);
-    console.log("clicked");
-
     // finding closest station to coords:
     const { lat, lng } = e.latlng;
     const closestStation = await fetch(
