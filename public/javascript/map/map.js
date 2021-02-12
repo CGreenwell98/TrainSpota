@@ -52,7 +52,6 @@ class Map {
   _loadMap(position) {
     const { latitude, longitude } = position.coords;
     const coords = [latitude, longitude];
-    alert(coords);
 
     this.#map = L.map("map", {
       center: coords,
