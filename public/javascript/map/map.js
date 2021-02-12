@@ -6,7 +6,6 @@ class Map {
   #showTrainRoutes = true;
   #stationMarkers = [];
   searchedStations;
-  #clickedMap = [];
 
   #mapLayers = {
     satelitte: L.tileLayer(
@@ -34,7 +33,11 @@ class Map {
   };
 
   constructor() {
-    this.renderCurrentPosition("_loadMap");
+    document.addEventListener(
+      "DOMContentLoaded",
+      this.renderCurrentPosition("_loadMap"),
+      false
+    );
   }
 
   renderCurrentPosition(mapFunction) {
@@ -68,6 +71,12 @@ class Map {
     this.#map.doubleClickZoom.disable();
   }
 
+  panToCurrentPosition(position) {
+    const coords = this._getCoords(position.coords);
+    this.#map.flyTo(coords, 15);
+    this._addMarker(coords, "You Are Here");
+  }
+
   changeMapType() {
     this.#map.removeLayer(this.#mapLayers[this.#currentLayer]);
     this.#currentLayer =
@@ -80,12 +89,6 @@ class Map {
     if (this.#showTrainRoutes)
       this.#map.addLayer(this.#mapLayers.openRailwayMap);
     else this.#map.removeLayer(this.#mapLayers.openRailwayMap);
-  }
-
-  panToCurrentPosition(position) {
-    const coords = this._getCoords(position.coords);
-    this.#map.flyTo(coords, 15);
-    this._addMarker(coords, "You Are Here");
   }
 
   async fetchStationData(stationName) {
