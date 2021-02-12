@@ -33,11 +33,7 @@ class Map {
   };
 
   constructor() {
-    document.addEventListener(
-      "load",
-      this.renderCurrentPosition("_loadMap"),
-      false
-    );
+    document.addEventListener("load", this.renderCurrentPosition("_loadMap"));
   }
 
   renderCurrentPosition(mapFunction) {
