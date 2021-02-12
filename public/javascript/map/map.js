@@ -43,9 +43,10 @@ class Map {
         this[mapFunction].bind(this),
         function () {
           alert("Could not get your position");
-        }
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
-    else alert("geolocation failed");
+    else alert("Geolocation not supported by browser");
   }
 
   _loadMap(position) {
