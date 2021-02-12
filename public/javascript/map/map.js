@@ -34,7 +34,7 @@ class Map {
 
   constructor() {
     document.addEventListener(
-      "DOMContentLoaded",
+      "load",
       this.renderCurrentPosition("_loadMap"),
       false
     );
