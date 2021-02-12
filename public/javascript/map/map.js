@@ -45,6 +45,7 @@ class Map {
           alert("Could not get your position");
         }
       );
+    else alert("geolocation failed");
   }
 
   _loadMap(position) {
