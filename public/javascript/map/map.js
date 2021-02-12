@@ -33,21 +33,7 @@ class Map {
   };
 
   constructor() {
-    if (window.attachEvent) {
-      window.attachEvent("onload", this.renderCurrentPosition("_loadMap"));
-    } else if (window.addEventListener) {
-      window.addEventListener(
-        "load",
-        this.renderCurrentPosition("_loadMap"),
-        false
-      );
-    } else {
-      document.addEventListener(
-        "load",
-        this.renderCurrentPosition("_loadMap"),
-        false
-      );
-    }
+    this.renderCurrentPosition("_loadMap");
   }
 
   renderCurrentPosition(mapFunction) {
@@ -64,6 +50,7 @@ class Map {
   _loadMap(position) {
     const { latitude, longitude } = position.coords;
     const coords = [latitude, longitude];
+    alert(coords);
 
     this.#map = L.map("map", {
       center: coords,
