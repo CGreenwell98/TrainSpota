@@ -33,7 +33,21 @@ class Map {
   };
 
   constructor() {
-    document.addEventListener("load", this.renderCurrentPosition("_loadMap"));
+    if (window.attachEvent) {
+      window.attachEvent("onload", this.renderCurrentPosition("_loadMap"));
+    } else if (window.addEventListener) {
+      window.addEventListener(
+        "load",
+        this.renderCurrentPosition("_loadMap"),
+        false
+      );
+    } else {
+      document.addEventListener(
+        "load",
+        this.renderCurrentPosition("_loadMap"),
+        false
+      );
+    }
   }
 
   renderCurrentPosition(mapFunction) {
