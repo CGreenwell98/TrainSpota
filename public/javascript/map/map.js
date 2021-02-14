@@ -6,6 +6,7 @@ class Map {
   #showTrainRoutes = true;
   #stationMarkers = [];
   searchedStations;
+  #clickedCoords;
 
   #mapLayers = {
     satelitte: L.tileLayer(
@@ -64,7 +65,7 @@ class Map {
         [59, -12],
         [50, 3],
       ],
-    }).on("dblclick", this._mapClick.bind(this));
+    }).on("click", this._mapClick.bind(this));
 
     this.#map.doubleClickZoom.disable();
   }
@@ -146,6 +147,9 @@ class Map {
   }
 
   async _mapClick(e) {
+    // Prevent leaflet map click bug:
+    if (e.latlng === this.#clickedCoords) return;
+    this.#clickedCoords = e.latlng;
     // finding closest station to coords:
     const { lat, lng } = e.latlng;
     const closestStation = await fetch(
