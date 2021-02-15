@@ -6,7 +6,7 @@ class Map {
   #showTrainRoutes = true;
   #stationMarkers = [];
   searchedStations;
-  #clickedCoords;
+  #clickedTimeStamp;
 
   #mapLayers = {
     satelitte: L.tileLayer(
@@ -34,28 +34,12 @@ class Map {
   };
 
   constructor() {
-    this.renderCurrentPosition("_loadMap");
+    // this.renderCurrentPosition("_loadMap");
+    this._loadMap();
   }
 
-  renderCurrentPosition(mapFunction) {
-    // Geo-location:
-    if (navigator.geolocation)
-      navigator.geolocation.getCurrentPosition(
-        this[mapFunction].bind(this),
-        function () {
-          alert("Could not get your position");
-        },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-      );
-    else alert("Geolocation not supported by browser");
-  }
-
-  _loadMap(position) {
-    const { latitude, longitude } = position.coords;
-    const coords = [latitude, longitude];
-
+  _loadMap() {
     this.#map = L.map("map", {
-      center: coords,
       zoom: 13,
       maxZoom: 18,
       minZoom: 6,
@@ -65,15 +49,19 @@ class Map {
         [59, -12],
         [50, 3],
       ],
-    }).on("click", this._mapClick.bind(this));
-
-    this.#map.doubleClickZoom.disable();
+    })
+      .locate({ setView: true, maxZoom: 15 })
+      .on("click", this._mapClick.bind(this));
   }
 
-  panToCurrentPosition(position) {
-    const coords = this._getCoords(position.coords);
-    this.#map.flyTo(coords, 15);
-    this._addMarker(coords, "You Are Here");
+  panToCurrentPosition() {
+    this.#map.locate();
+
+    this.#map.on("locationfound", (e) => {
+      this.#map.flyTo(e.latlng, 15);
+      this._addMarker(e.latlng, "You Are Here");
+    });
+    this.#map.on("locationerror", (e) => alert(e.message));
   }
 
   changeMapType() {
@@ -148,16 +136,17 @@ class Map {
 
   async _mapClick(e) {
     // Prevent leaflet map click bug:
-    if (e.latlng === this.#clickedCoords) return;
-    this.#clickedCoords = e.latlng;
+    const clickTimeInterval =
+      e.originalEvent.timeStamp - this.#clickedTimeStamp;
+    if (clickTimeInterval < 100) return;
+    this.#clickedTimeStamp = e.originalEvent.timeStamp;
     // finding closest station to coords:
     const { lat, lng } = e.latlng;
     const closestStation = await fetch(
       `/map/closest-station/${lat}/${lng}`
     ).then((res) => res.json());
     if (closestStation.distance > 500) return;
-    const { latitude, longitude } = closestStation;
-    this._addMarker([latitude, longitude], closestStation.name);
+    this._addMarker(this._getCoords(closestStation), closestStation.name);
     MapUI.displayClosestStation(closestStation);
   }
 }

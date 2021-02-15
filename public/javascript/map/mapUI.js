@@ -30,8 +30,7 @@ class MapUI {
 
     if (btnClicked === "mapType") Map.changeMapType();
     if (btnClicked === "trainRoutes") Map.toggleTrainRoutes();
-    if (btnClicked === "curLocation")
-      Map.renderCurrentPosition("panToCurrentPosition");
+    if (btnClicked === "curLocation") Map.panToCurrentPosition();
     if (btnClicked === "search") this._searchButton();
 
     if (btnClicked !== "search") this.#searchContainer.classList.add("hidden");
