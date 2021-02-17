@@ -1,14 +1,14 @@
 import MapUI from "./mapUI.js";
 
 class Map {
-  #map;
-  #currentLayer = "openStreetMap";
-  #showTrainRoutes = true;
-  #stationMarkers = [];
+  _map;
+  _currentLayer = "openStreetMap";
+  _showTrainRoutes = true;
+  _stationMarkers = [];
   searchedStations;
-  #clickedTimeStamp;
+  _clickedTimeStamp;
 
-  #mapLayers = {
+  _mapLayers = {
     satelitte: L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       {
@@ -39,12 +39,12 @@ class Map {
   }
 
   _loadMap() {
-    this.#map = L.map("map", {
+    this._map = L.map("map", {
       zoom: 13,
       maxZoom: 18,
       minZoom: 6,
       zoomControl: false,
-      layers: [this.#mapLayers.openStreetMap, this.#mapLayers.openRailwayMap],
+      layers: [this._mapLayers.openStreetMap, this._mapLayers.openRailwayMap],
       maxBounds: [
         [59, -12],
         [50, 3],
@@ -55,27 +55,27 @@ class Map {
   }
 
   panToCurrentPosition() {
-    this.#map.locate();
+    this._map.locate();
 
-    this.#map.on("locationfound", (e) => {
-      this.#map.flyTo(e.latlng, 15);
+    this._map.on("locationfound", (e) => {
+      this._map.flyTo(e.latlng, 15);
       this._addMarker(e.latlng, "You Are Here");
     });
-    this.#map.on("locationerror", (e) => alert(e.message));
+    this._map.on("locationerror", (e) => alert(e.message));
   }
 
   changeMapType() {
-    this.#map.removeLayer(this.#mapLayers[this.#currentLayer]);
-    this.#currentLayer =
-      this.#currentLayer === "openStreetMap" ? "satelitte" : "openStreetMap";
-    this.#map.addLayer(this.#mapLayers[this.#currentLayer]);
+    this._map.removeLayer(this._mapLayers[this._currentLayer]);
+    this._currentLayer =
+      this._currentLayer === "openStreetMap" ? "satelitte" : "openStreetMap";
+    this._map.addLayer(this._mapLayers[this._currentLayer]);
   }
 
   toggleTrainRoutes() {
-    this.#showTrainRoutes = !this.#showTrainRoutes;
-    if (this.#showTrainRoutes)
-      this.#map.addLayer(this.#mapLayers.openRailwayMap);
-    else this.#map.removeLayer(this.#mapLayers.openRailwayMap);
+    this._showTrainRoutes = !this._showTrainRoutes;
+    if (this._showTrainRoutes)
+      this._map.addLayer(this._mapLayers.openRailwayMap);
+    else this._map.removeLayer(this._mapLayers.openRailwayMap);
   }
 
   async fetchStationData(stationName) {
@@ -94,14 +94,14 @@ class Map {
 
   panToStation(index) {
     const coords = this._getCoords(this.searchedStations[index]);
-    this.#map.flyTo(coords, 15);
+    this._map.flyTo(coords, 15);
     this._addMarker(coords, this.searchedStations[index].name);
   }
 
   _addMarker(coords, popupText) {
-    if (this.#stationMarkers.includes(popupText)) return;
+    if (this._stationMarkers.includes(popupText)) return;
     L.marker(coords)
-      .addTo(this.#map)
+      .addTo(this._map)
       .bindPopup(
         L.popup({
           autoClose: false,
@@ -110,7 +110,7 @@ class Map {
       )
       .setPopupContent(popupText)
       .openPopup();
-    this.#stationMarkers.push(popupText);
+    this._stationMarkers.push(popupText);
   }
 
   _getCoords(object) {
@@ -137,9 +137,9 @@ class Map {
   async _mapClick(e) {
     // Prevent leaflet map click bug:
     const clickTimeInterval =
-      e.originalEvent.timeStamp - this.#clickedTimeStamp;
+      e.originalEvent.timeStamp - this._clickedTimeStamp;
     if (clickTimeInterval < 100) return;
-    this.#clickedTimeStamp = e.originalEvent.timeStamp;
+    this._clickedTimeStamp = e.originalEvent.timeStamp;
     // finding closest station to coords:
     const { lat, lng } = e.latlng;
     const closestStation = await fetch(

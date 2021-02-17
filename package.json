@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "parcel build index.ejs map.ejs"
   },
   "author": "CGreenwell",
   "license": "ISC",
@@ -13,6 +14,11 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "path-browserify": "^1.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.12.16"
   }
 }
