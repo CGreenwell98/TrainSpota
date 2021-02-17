@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "build": "parcel build index.ejs map.ejs"
+    "dev": "nodemon server.js"
   },
   "author": "CGreenwell",
   "license": "ISC",
