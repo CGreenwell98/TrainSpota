@@ -80,6 +80,7 @@ nav {
     top: 7vh;
     background-color: #262626;
     display: flex;
+    justify-content: start;
     flex-direction: column;
     align-items: center;
     width: 50%;
@@ -88,6 +89,7 @@ nav {
   }
   .nav-links li {
     opacity: 0;
+    padding: 3rem 0;
   }
   .burger {
     display: block;
