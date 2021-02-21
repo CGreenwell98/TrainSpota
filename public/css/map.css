@@ -188,7 +188,7 @@ i {
   outline: none;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1367px) {
   .side-bar .btn {
     margin: 1rem 0;
   }
