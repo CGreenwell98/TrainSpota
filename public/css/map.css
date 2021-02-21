@@ -190,7 +190,7 @@ i {
 
 @media screen and (max-width: 1367px) {
   .side-bar .btn {
-    margin: 1rem 0;
+    padding: 1rem 0;
   }
 }
 
