@@ -34,7 +34,6 @@ class Map {
   };
 
   constructor() {
-    // this.renderCurrentPosition("_loadMap");
     this._loadMap();
   }
 
@@ -79,17 +78,21 @@ class Map {
   }
 
   async fetchStationData(stationName) {
-    this.searchedStations = await fetch(
-      `/map/search-station/${stationName}`
-    ).then((res) => res.json());
-    if (this.searchedStations.length === 1) {
-      this.panToStation(0);
+    try {
+      this.searchedStations = await fetch(
+        `/map/search-station/${stationName}`
+      ).then((res) => res.json());
+      if (this.searchedStations.length === 1) {
+        this.panToStation(0);
+      }
+      let stationData = this.searchedStations.map((station) => ({
+        name: station.name,
+        code: station.station_code,
+      }));
+      return stationData;
+    } catch (err) {
+      console.error(err);
     }
-    let dataUI = this.searchedStations.map((station) => ({
-      name: station.name,
-      code: station.station_code,
-    }));
-    return dataUI;
   }
 
   panToStation(index) {
@@ -99,6 +102,7 @@ class Map {
   }
 
   _addMarker(coords, popupText) {
+    // Prevent multiple markers for the same station:
     if (this._stationMarkers.includes(popupText)) return;
     L.marker(coords)
       .addTo(this._map)
@@ -109,7 +113,8 @@ class Map {
         })
       )
       .setPopupContent(popupText)
-      .openPopup();
+      .openPopup()
+      .on("click", this._mapClick.bind(this));
     this._stationMarkers.push(popupText);
   }
 
@@ -138,16 +143,23 @@ class Map {
     // Prevent leaflet map click bug:
     const clickTimeInterval =
       e.originalEvent.timeStamp - this._clickedTimeStamp;
-    if (clickTimeInterval < 100) return;
+    if (clickTimeInterval < 200) return;
     this._clickedTimeStamp = e.originalEvent.timeStamp;
     // finding closest station to coords:
-    const { lat, lng } = e.latlng;
-    const closestStation = await fetch(
-      `/map/closest-station/${lat}/${lng}`
-    ).then((res) => res.json());
-    if (closestStation.distance > 500) return;
-    this._addMarker(this._getCoords(closestStation), closestStation.name);
-    MapUI.displayClosestStation(closestStation);
+    this._findClosestStation(e.latlng);
+  }
+
+  async _findClosestStation({ lat, lng }) {
+    try {
+      const closestStation = await fetch(
+        `/map/closest-station/${lat}/${lng}`
+      ).then((res) => res.json());
+      if (closestStation.distance > 400) return;
+      this._addMarker(this._getCoords(closestStation), closestStation.name);
+      MapUI.displayClosestStation(closestStation);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 

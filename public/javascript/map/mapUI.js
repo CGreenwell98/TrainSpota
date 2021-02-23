@@ -8,7 +8,7 @@ class MapUI {
   _searchResults = document.querySelector(".search-results");
   _trainBtnBox = document.querySelector(".train-btn-box");
 
-  _curStation;
+  _curStation = {};
   _curTrainType = "stopping";
   _clickedIndex;
 
@@ -176,6 +176,8 @@ class MapUI {
   }
 
   displayClosestStation(stationData) {
+    // Prevent UI reload + Train data fetch if clicked on same station twice:
+    if (stationData.name === this._curStation.stationName) return;
     this._searchContainer.classList.remove("hidden");
     this._searchResults.innerHTML = this._trainBtnBox.innerHTML = "";
     const { name, station_code } = stationData;
