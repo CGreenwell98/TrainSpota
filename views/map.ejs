@@ -41,16 +41,23 @@
       <i class="fas fa-subway btn" data-name="trainRoutes"></i>
     </div>
     <div class="search hidden">
-      <form class="search-form" action="#">
-        <input class="search-box" name="search" type="search" />
-        <button class="btn" for="search"><i class="fas fa-search"></i></button>
-      </form>
-      <div class="train-btn-box"></div>
-      <div class="search-results">
-        <p>
-          Search for any National Rail Station<br />
-          in the UK
-        </p>
+      <div class="search-form">
+        <form action="#">
+          <input
+            class="search-box"
+            name="search"
+            type="search"
+            placeholder="Search for a station"
+          />
+        </form>
+        <button class="btn close-btn" for="search">
+          <b><small>CLOSE</small></b>
+        </button>
+      </div>
+
+      <div class="search-result-container">
+        <div class="train-btn-box"></div>
+        <div class="search-results"></div>
       </div>
     </div>
 

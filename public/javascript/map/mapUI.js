@@ -7,6 +7,8 @@ class MapUI {
   _searchBox = document.querySelector(".search-box");
   _searchResults = document.querySelector(".search-results");
   _trainBtnBox = document.querySelector(".train-btn-box");
+  _closeButton = document.querySelector(".close-btn");
+  _searchContainerResults = document.querySelector(".search-result-container");
 
   _curStation = {};
   _curTrainType = "stopping";
@@ -15,6 +17,10 @@ class MapUI {
   constructor() {
     this._sideBar.addEventListener("click", this._buttonClick.bind(this));
     this._searchForm.addEventListener("submit", this._stationSearch.bind(this));
+    this._closeButton.addEventListener(
+      "click",
+      this._closeButtonClick.bind(this)
+    );
     this._searchContainer.addEventListener(
       "click",
       this._searchResultClick.bind(this)
@@ -31,14 +37,20 @@ class MapUI {
     if (btnClicked === "mapType") Map.changeMapType();
     if (btnClicked === "trainRoutes") Map.toggleTrainRoutes();
     if (btnClicked === "curLocation") Map.panToCurrentPosition();
-    if (btnClicked === "search") this._searchButton();
+    if (btnClicked === "search") this._searchButtonClick();
 
-    if (btnClicked !== "search") this._searchContainer.classList.add("hidden");
+    if (btnClicked !== "search") this._closeButtonClick();
   }
 
-  _searchButton() {
-    const btn = this._searchContainer.classList;
-    btn.toggle("hidden");
+  _closeButtonClick() {
+    this._searchContainer.classList.add("hidden");
+    this._searchContainerResults.classList.remove(
+      "search-result-container-active"
+    );
+  }
+
+  _searchButtonClick() {
+    this._searchContainer.classList.toggle("hidden");
     if (!btn.contains("hidden")) this._searchBox.focus();
   }
 
@@ -56,27 +68,40 @@ class MapUI {
         "beforeend",
         `<p>No search results found</p>`
       );
+
+    this._searchResults.insertAdjacentHTML(
+      "beforeend",
+      `<small>Search results</small>`
+    );
     stationData.forEach((data, i) =>
       this._searchResults.insertAdjacentHTML(
         "beforeend",
         this._searchResultMarkup(data, i)
       )
     );
+    // Open window:
+    this._searchContainerResults.classList.add(
+      "search-result-container-active"
+    );
   }
 
   _searchResultMarkup(data, i) {
     return `
-      <div class="result-box" data-index="${i}">
-        <p>${data.name} (${data.code})</p>
-      </div>
+    <div class="result-box" data-index="${i}">
+              <b>${data.code}</b>
+              <p>${data.name}</p>
+            </div>
     `;
   }
 
   async _searchResultClick(event) {
     const clicked = event.target.closest(".result-box");
     if (!clicked) return;
-    // clear searh results + remove click:
+    // clear search results + open window:
     this._searchResults.innerHTML = "";
+    this._searchContainerResults.classList.add(
+      "search-result-container-active"
+    );
 
     // pan camera and get station + train data:
     this._clickedIndex = clicked.dataset.index;
@@ -85,12 +110,35 @@ class MapUI {
     this._handleTrainSearch(name, station_code);
   }
 
+  async _handleTrainSearch(stationName, stationCode) {
+    this._curStation = { stationName, stationCode };
+    this._curTrainType = "stopping";
+    const trainData = await Map.getTrainData(stationCode, "stopping");
+
+    // display new data:
+    this._searchResults.insertAdjacentHTML(
+      "beforeend",
+      this._displayTrainData(trainData, this._curStation)
+    );
+
+    // Display buttons:
+    this._trainBtnBox.insertAdjacentHTML(
+      "beforeend",
+      `
+      <button class="train-type-btn btn" data-traintype="stopping">Stopping</button>
+      <button class="train-type-btn btn" data-traintype="pass">Passing</button>
+     `
+    );
+  }
+
   _displayTrainData(trainData, { stationName, stationCode }, trainType) {
     if (trainData.length < 1) return `<p>No train data found</p>`;
     return `
         <div class="train-data-box">
               <h5>${stationName} (${stationCode})</h5>
-              <b>Trains ${trainType === "pass" ? "passing" : "stopping"}:</b>
+              <small>Trains ${
+                trainType === "pass" ? "passing" : "stopping"
+              }:</small>
               ${
                 trainType === "pass"
                   ? this._trainPassingDataMarkup(trainData)
@@ -154,34 +202,24 @@ class MapUI {
     );
   }
 
-  async _handleTrainSearch(stationName, stationCode) {
-    this._curStation = { stationName, stationCode };
-    this._curTrainType = "stopping";
-    const trainData = await Map.getTrainData(stationCode, "stopping");
-
-    // display new data:
-    this._searchResults.insertAdjacentHTML(
-      "beforeend",
-      this._displayTrainData(trainData, this._curStation)
-    );
-
-    // Display buttons:
-    this._trainBtnBox.insertAdjacentHTML(
-      "beforeend",
-      `
-      <button class="train-type-btn btn" data-traintype="stopping">Stopping</button>
-      <button class="train-type-btn btn" data-traintype="pass">Passing</button>
-     `
-    );
-  }
-
   displayClosestStation(stationData) {
+    this._searchContainer.classList.remove("hidden");
+    // Open Window:
+    this._searchContainerResults.classList.add(
+      "search-result-container-active"
+    );
     // Prevent UI reload + Train data fetch if clicked on same station twice:
     if (stationData.name === this._curStation.stationName) return;
-    this._searchContainer.classList.remove("hidden");
     this._searchResults.innerHTML = this._trainBtnBox.innerHTML = "";
     const { name, station_code } = stationData;
     this._handleTrainSearch(name, station_code);
+  }
+
+  hideSearchBox() {
+    this._searchContainer.classList.add("hidden");
+    this._searchContainerResults.classList.remove(
+      "search-result-container-active"
+    );
   }
 }
 

@@ -110,6 +110,7 @@ class Map {
         L.popup({
           autoClose: false,
           className: `popup`,
+          closeButton: false,
         })
       )
       .setPopupContent(popupText)
@@ -154,7 +155,7 @@ class Map {
       const closestStation = await fetch(
         `/map/closest-station/${lat}/${lng}`
       ).then((res) => res.json());
-      if (closestStation.distance > 400) return;
+      if (closestStation.distance > 400) return MapUI.hideSearchBox();
       this._addMarker(this._getCoords(closestStation), closestStation.name);
       MapUI.displayClosestStation(closestStation);
     } catch (err) {

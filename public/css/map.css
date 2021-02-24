@@ -44,6 +44,7 @@ i {
   height: 100vh;
 }
 
+/* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */
 /* Search */
 
 .search {
@@ -52,16 +53,27 @@ i {
   top: 5rem;
   left: 5rem;
   width: 18rem;
-  min-height: 9rem;
-  max-height: 70%;
-  border-radius: 1.5rem;
-  background-color: #262626;
+  max-height: 85%;
+  background-color: transparent;
   color: white;
   display: flex;
   align-items: center;
   justify-content: start;
   flex-direction: column;
-  padding: 2rem 0;
+  transition: opacity 0.2s ease-out;
+  opacity: 1;
+}
+
+.search-form,
+.search-result-container {
+  width: 18rem;
+  padding: 1rem 0;
+  background-color: #262626;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
 }
 
 @media screen and (max-width: 767px) {
@@ -72,29 +84,69 @@ i {
 }
 
 .search input {
-  border-radius: 2rem;
-  padding: 0 1rem;
+  border-radius: 0.4rem;
   border: none;
-  width: 12rem;
+  padding-left: 1rem;
+  width: 11rem;
   height: 2rem;
-  background-color: #f8f8ff;
+  background-color: #e6e6e6;
 }
 
 .search input:focus {
   outline: none;
 }
 
-.search-form button,
-.search-form button:focus {
+.search-form .close-btn,
+.search-form .close-btn:focus {
   background-color: #262626;
+  color: #d9d9d9;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
 }
 
-.search-form {
-  margin-bottom: 2rem;
+.search-form .close-btn:hover {
+  color: #f2f2f2;
+}
+
+/* Search Results //////////////////////////////////////////////////////////////////////////// */
+
+.search-result-container {
+  max-height: 0;
+  padding: 0;
+  flex-direction: column;
+  transition: max-height 0.15s ease-out;
+  overflow: hidden;
+}
+
+.search-result-container-active {
+  max-height: 70%;
+  padding: 1rem 0;
+  flex-direction: column;
+  transition: max-height 0.25s ease-in;
+  overflow: auto;
 }
 
 .search-results {
   overflow: auto;
+}
+
+.search-results small {
+  color: #e6e6e6;
+  margin-bottom: 0.5rem;
+}
+
+.search-results b {
+  background-color: #45859a;
+  padding: 0.3rem 0.4rem;
+  border-radius: 0.3rem;
+  margin-right: 0.6rem;
+}
+
+.result-box {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-top: 0.3rem;
 }
 
 .result-box,
@@ -102,21 +154,15 @@ i {
   width: 12rem;
   border-radius: 1rem;
   padding: 0.1rem 1rem;
-  background-color: #4c4c4c;
   color: white;
   transition: all 0.3s;
-}
-
-.result-box:not(:last-child),
-.train-data-box:not(:last-child) {
-  margin-bottom: 1rem;
 }
 
 .result-box:hover {
   background-color: #555;
 }
 
-/* Train times */
+/* Train times ////////////////////////////////////////////////////////////////////////*/
 
 .train-data-box h5 {
   font-size: 1rem;
@@ -155,7 +201,9 @@ i {
 }
 
 .hidden {
-  display: none;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 /* //////////////////////////////////////////////////// */
@@ -163,7 +211,7 @@ i {
 
 .side-bar {
   padding: 0.9rem;
-  border-radius: 1.5rem;
+  border-radius: 0.5rem;
   position: absolute;
   top: 5rem;
   left: 1rem;
