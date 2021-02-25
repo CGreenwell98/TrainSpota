@@ -7,6 +7,7 @@ class MapUI {
   _searchBox = document.querySelector(".search-box");
   _searchResults = document.querySelector(".search-results");
   _trainBtnBox = document.querySelector(".train-btn-box");
+  _trainBtns;
   _closeButton = document.querySelector(".close-btn");
   _searchContainerResults = document.querySelector(".search-result-container");
 
@@ -50,8 +51,13 @@ class MapUI {
   }
 
   _searchButtonClick() {
-    this._searchContainer.classList.toggle("hidden");
-    if (!btn.contains("hidden")) this._searchBox.focus();
+    const search = this._searchContainer.classList;
+    search.toggle("hidden");
+    if (!search.contains("hidden")) this._searchBox.focus();
+    else
+      this._searchContainerResults.classList.remove(
+        "search-result-container-active"
+      );
   }
 
   async _stationSearch(event) {
@@ -125,8 +131,12 @@ class MapUI {
     this._trainBtnBox.insertAdjacentHTML(
       "beforeend",
       `
-      <button class="train-type-btn btn" data-traintype="stopping">Stopping</button>
-      <button class="train-type-btn btn" data-traintype="pass">Passing</button>
+      <button class="btn train-type-btn train-type-btn-active" data-traintype="stopping">
+        Stopping
+      </button>
+      <button class="btn train-type-btn" data-traintype="pass">
+        Passing
+      </button>
      `
     );
   }
@@ -134,33 +144,28 @@ class MapUI {
   _displayTrainData(trainData, { stationName, stationCode }, trainType) {
     if (trainData.length < 1) return `<p>No train data found</p>`;
     return `
-        <div class="train-data-box">
-              <h5>${stationName} (${stationCode})</h5>
-              <small>Trains ${
-                trainType === "pass" ? "passing" : "stopping"
-              }:</small>
+              <h3><b>${stationCode}</b>${stationName}</h3>
               ${
                 trainType === "pass"
                   ? this._trainPassingDataMarkup(trainData)
                   : this._trainStoppingDataMarkup(trainData)
               }
-              
-            </div>
       `;
   }
 
   _trainStoppingDataMarkup(trainData) {
     let markup = "";
     trainData.forEach((data) => {
-      markup += ` <hr />
-          <p>
-            ${data.operator_name} (${data.train_uid}) <br />
-            ${data.origin_name} to ${data.destination_name}
-          </p>
-          <ul>
-            <li>Platform ${data.platform ? data.platform : "1"}</li>
-            <li>ETA/ETD: ${data.arrival_time} - ${data.departure_time}</li>
-            </ul>`;
+      markup += `
+      <div class="train-data-box">
+              <h5>Platform ${data.platform ? data.platform : "1"}</h5>
+              <small>${data.operator_name}</small>
+              <ul>
+                <li class="arv-box"><b>ARV</b> ${data.arrival_time}</li>
+                <li class="dep-box"><b>DEP</b> ${data.departure_time}</li>
+              </ul>
+              <small>${data.origin_name} to ${data.destination_name}</small>
+            </div>`;
     });
     return markup;
   }
@@ -189,6 +194,12 @@ class MapUI {
     const trainType = clicked.dataset.traintype;
     if (trainType === this._curTrainType) return;
     this._curTrainType = trainType;
+
+    // Update button UI:
+    this._trainBtns = document.querySelectorAll(".train-type-btn");
+    this._trainBtns.forEach((btn) =>
+      btn.classList.toggle("train-type-btn-active")
+    );
 
     // update data:
     this._searchResults.innerHTML = "";
