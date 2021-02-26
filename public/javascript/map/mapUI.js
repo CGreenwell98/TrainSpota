@@ -173,15 +173,15 @@ class MapUI {
   _trainPassingDataMarkup(trainData) {
     let markup = "";
     trainData.forEach((data) => {
-      markup += ` <hr />
-          <p>
-            ${data.operator_name} (${data.train_uid}) <br />
-            ${data.origin_name} to ${data.destination_name}
-          </p>
-          <ul>
-            <li>Platform ${data.platform ? data.platform : "1"}</li>
-            <li>Pass time: ${data.pass_time}</li>
-            </ul>`;
+      markup += ` 
+      <div class="train-data-box">
+              <h5>Platform ${data.platform ? data.platform : "1"}</h5>
+              <small>${data.operator_name}</small>
+              <ul>
+                <li class="pass-box"><b>PASS</b> ${data.pass_time}</li>
+              </ul>
+              <small>${data.origin_name} to ${data.destination_name}</small>
+            </div>`;
     });
     return markup;
   }

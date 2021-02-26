@@ -210,13 +210,17 @@ i {
   background-color: #b30000;
 }
 
+.pass-box b {
+  background-color: #00802b;
+}
+
 .train-type-btn {
   width: 4rem;
   font-size: 0.7rem;
   background-color: transparent;
   color: #999999;
   margin-bottom: 1rem;
-  transition: all 0.2s ease-out;
+  transition: all 0.15s ease-out;
 }
 
 .train-type-btn-active {
@@ -237,7 +241,7 @@ i {
 }
 
 .train-btn-box {
-  width: 14rem;
+  width: 15rem;
 }
 
 .train-data-box:not(:last-child) {
