@@ -25,10 +25,10 @@ exports.stationTrainData = async function (stationCode, type) {
     const allData = type === "pass" ? json.passes.all : json.updates.all;
     return allData.map((data) => ({
       train_uid: data.train_uid,
-      platform: data.platform,
-      operator_name: data.operator_name,
-      arrival_time: data.aimed_arrival_time,
-      departure_time: data.aimed_departure_time,
+      platform: data.platform || "?",
+      operator_name: data.operator_name || "Operator name unknown",
+      arrival_time: data.aimed_arrival_time || "Starts here",
+      departure_time: data.aimed_departure_time || "Terminates here",
       pass_time: data.aimed_pass_time,
       origin_name: data.origin_name,
       destination_name: data.destination_name,

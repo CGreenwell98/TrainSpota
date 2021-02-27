@@ -2,7 +2,7 @@ import Map from "./map.js";
 
 class MapUI {
   _sideBar = document.querySelector(".side-bar");
-  _searchContainer = document.querySelector(".search");
+  _searchContainer = document.querySelector(".search-container");
   _searchForm = document.querySelector(".search-form");
   _searchBox = document.querySelector(".search-box");
   _searchResults = document.querySelector(".search-results");
@@ -10,6 +10,7 @@ class MapUI {
   _trainBtns;
   _closeButton = document.querySelector(".close-btn");
   _searchContainerResults = document.querySelector(".search-result-container");
+  _loadingDots = document.querySelector(".loading-dots");
 
   _curStation = {};
   _curTrainType = "stopping";
@@ -117,6 +118,9 @@ class MapUI {
   }
 
   async _handleTrainSearch(stationName, stationCode) {
+    // Add loading dots:
+    this._toggleLoadingDots("add");
+
     this._curStation = { stationName, stationCode };
     this._curTrainType = "stopping";
     const trainData = await Map.getTrainData(stationCode, "stopping");
@@ -139,6 +143,9 @@ class MapUI {
       </button>
      `
     );
+
+    // remove loading dots:
+    this._toggleLoadingDots("remove");
   }
 
   _displayTrainData(trainData, { stationName, stationCode }, trainType) {
@@ -158,13 +165,17 @@ class MapUI {
     trainData.forEach((data) => {
       markup += `
       <div class="train-data-box">
-              <h5>Platform ${data.platform ? data.platform : "1"}</h5>
+              <h5>Platform ${data.platform}</h5>
               <small>${data.operator_name}</small>
               <ul>
                 <li class="arv-box"><b>ARV</b> ${data.arrival_time}</li>
                 <li class="dep-box"><b>DEP</b> ${data.departure_time}</li>
               </ul>
-              <small>${data.origin_name} to ${data.destination_name}</small>
+              <div class="train-destination-box">
+                <div>${data.origin_name}</div>
+                <i class="fas fa-arrow-right"></i>
+                <div>${data.destination_name}</div>
+              </div>  
             </div>`;
     });
     return markup;
@@ -175,12 +186,16 @@ class MapUI {
     trainData.forEach((data) => {
       markup += ` 
       <div class="train-data-box">
-              <h5>Platform ${data.platform ? data.platform : "1"}</h5>
+              <h5>Platform ${data.platform}</h5>
               <small>${data.operator_name}</small>
               <ul>
                 <li class="pass-box"><b>PASS</b> ${data.pass_time}</li>
               </ul>
-              <small>${data.origin_name} to ${data.destination_name}</small>
+              <div class="train-destination-box">
+                <div>${data.origin_name}</div>
+                <i class="fas fa-arrow-right"></i>
+                <div>${data.destination_name}</div>
+              </div>  
             </div>`;
     });
     return markup;
@@ -194,6 +209,9 @@ class MapUI {
     const trainType = clicked.dataset.traintype;
     if (trainType === this._curTrainType) return;
     this._curTrainType = trainType;
+
+    // Add loading animation:
+    this._toggleLoadingDots("add");
 
     // Update button UI:
     this._trainBtns = document.querySelectorAll(".train-type-btn");
@@ -211,6 +229,9 @@ class MapUI {
       "beforeend",
       this._displayTrainData(trainData, this._curStation, trainType)
     );
+
+    // remove loading animation:
+    this._toggleLoadingDots("remove");
   }
 
   displayClosestStation(stationData) {
@@ -231,6 +252,13 @@ class MapUI {
     this._searchContainerResults.classList.remove(
       "search-result-container-active"
     );
+  }
+
+  _toggleLoadingDots(action) {
+    if (action === "add")
+      this._loadingDots.classList.remove("loading-dots-hidden");
+    if (action === "remove")
+      this._loadingDots.classList.add("loading-dots-hidden");
   }
 }
 

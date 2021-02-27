@@ -104,7 +104,7 @@ class Map {
   _addMarker(coords, popupText) {
     // Prevent multiple markers for the same station:
     if (this._stationMarkers.includes(popupText)) return;
-    L.marker(coords)
+    const marker = L.marker(coords)
       .addTo(this._map)
       .bindPopup(
         L.popup({
@@ -129,11 +129,6 @@ class Map {
       const trainData = await fetch(
         `/map/station-trains/${stationCode}/${type}`
       ).then((res) => res.json());
-      trainData.forEach((data) => {
-        if (type === "pass") return;
-        if (!data.arrival_time) data.arrival_time = "Starts here";
-        if (!data.departure_time) data.departure_time = "Terminates here";
-      });
       return trainData;
     } catch (err) {
       console.error(err);
